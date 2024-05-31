@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Random;
 
-
 public class Client {
     
     private static final String HOST = "localhost";
     private static final int PORT = 5000;
     
-    public Client(){
+    public Client() {
         System.out.println("1 >> [ini] Client constructor");
         try {
             System.out.println("2 >> connecting to server...");
@@ -24,9 +23,10 @@ public class Client {
             Random random = new Random();
             int index = random.nextInt(files.length);
             File file = files[index];
-            System.out.println("Enviando archivo: " + file.getAbsolutePath());
+            String rutaAbsoluta = file.getAbsolutePath();
+            System.out.println("Enviando archivo: " + rutaAbsoluta);
 
-            //Flujo de datos de entrada y salida
+            // Flujo de datos de entrada y salida
             DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
             
             // Envía el nombre del archivo
@@ -34,6 +34,9 @@ public class Client {
             
             // Envía el tamaño del archivo
             salida.writeInt((int) file.length());
+
+            // Envía la ruta absoluta del archivo
+            salida.writeUTF(rutaAbsoluta);
 
             // Envía el contenido del archivo
             FileInputStream fis = new FileInputStream(file);
@@ -44,7 +47,7 @@ public class Client {
             }
             fis.close();
             
-            System.out.println("Archivo enviado: " + file.getAbsolutePath());
+            System.out.println("Archivo enviado: " + rutaAbsoluta);
             System.out.println("4 >> final for client...");
             socket.close();
         } catch (IOException e) {
